@@ -782,6 +782,11 @@ section {
   width: 15px;
   height: 15px;
 }
+/* icon color utilities */
+.icon-accent  { color: var(--accent); }
+.icon-accent2 { color: var(--accent2); }
+.icon-linkedin { color: #0a66c2; }
+.icon-fg      { color: var(--fg); }
 .contact-label {
   font-size: 9px;
   color: var(--fg3);

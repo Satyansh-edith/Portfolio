@@ -326,19 +326,19 @@ export default function Home() {
           </div>
           <div className="contact-right">
             <a className="contact-item" href="mailto:dubeysatyansh4@gmail.com">
-              <div className="contact-icon"><EmailIcon style={{ color: "var(--accent)" }} /></div>
+              <div className="contact-icon"><EmailIcon className="icon-accent" /></div>
               <div><div className="contact-label">Gmail</div><div className="contact-val">dubeysatyansh4@gmail.com</div></div>
             </a>
             <a className="contact-item" href="tel:+917890719366">
-              <div className="contact-icon"><PhoneIcon style={{ color: "var(--accent2)" }} /></div>
+              <div className="contact-icon"><PhoneIcon className="icon-accent2" /></div>
               <div><div className="contact-label">Phone</div><div className="contact-val">+91-7890719366</div></div>
             </a>
             <a className="contact-item" href="https://linkedin.com/in/satyansh-dubey" target="_blank" rel="noopener">
-              <div className="contact-icon"><LinkedinIcon style={{ color: "#0a66c2" }} /></div>
+              <div className="contact-icon"><LinkedinIcon className="icon-linkedin" /></div>
               <div><div className="contact-label">LinkedIn</div><div className="contact-val">linkedin.com/in/satyansh-dubey</div></div>
             </a>
             <a className="contact-item" href="https://github.com/Satyansh-edith" target="_blank" rel="noopener">
-              <div className="contact-icon"><GithubIcon style={{ color: "var(--fg)" }} /></div>
+              <div className="contact-icon"><GithubIcon className="icon-fg" /></div>
               <div><div className="contact-label">GitHub</div><div className="contact-val">github.com/Satyansh-edith</div></div>
             </a>
           </div>
