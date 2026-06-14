@@ -174,7 +174,7 @@ nav {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--custom-accent2));
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #07100a;
   padding: 0.9rem 2.1rem;
   border-radius: 999px;
