@@ -67,9 +67,11 @@ function GithubGraph() {
           const totalContributions = contribData.total?.lastYear ?? contributions.reduce((a: number, c: { count: number }) => a + c.count, 0);
 
           const maxCount = Math.max(...contributions.map((d: { count: number }) => d.count), 1);
+          // Show last ~8 months (approximately 35 weeks -> 245 days)
+          const last8Months = contributions.slice(-245);
           const wks: { date: string; count: number; lvl: number }[][] = [];
-          for (let i = 0; i < contributions.length; i += 7) {
-            wks.push(contributions.slice(i, i + 7).map((day: { date: string; count: number }) => {
+          for (let i = 0; i < last8Months.length; i += 7) {
+            wks.push(last8Months.slice(i, i + 7).map((day: { date: string; count: number }) => {
               let lvl = 0;
               if (day.count > 0) {
                 if (day.count <= Math.ceil(maxCount * 0.25)) lvl = 1;
@@ -103,13 +105,9 @@ function GithubGraph() {
       <div className="gh-grid-wrap"><div className="gh-grid">
         {weeks.map((week, i) => (<div key={i} className="gh-week">{week.map((day, j) => (<div key={j} className="gh-cell" data-level={day.lvl > 0 ? day.lvl : undefined} data-tooltip={`${day.count} contribution${day.count !== 1 ? "s" : ""} · ${day.date}`} />))}</div>))}
       </div></div>
-      <div className="gh-legend">Less<div className="gh-legend-cell" style={{ background: "var(--gh-empty)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l1)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l2)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l3)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l4)" }} />More</div>
-      <div className="gh-stats-row">
-        <div className="gh-stat"><strong>{stats.totalContributions}</strong>contributions (year)</div>
-        <div className="gh-stat"><strong>{stats.publicRepos}</strong>public repos</div>
-        <div className="gh-stat"><strong>{stats.totalStars}</strong>total stars</div>
-        <div className="gh-stat"><strong>{stats.activeDays}</strong>active days</div>
-        <div className="gh-stat"><strong>{stats.followers}</strong>followers</div>
+      <div className="gh-footer-row">
+        <div className="gh-contrib-label">{stats.totalContributions} contributions</div>
+        <div className="gh-legend">Less<div className="gh-legend-cell" style={{ background: "var(--gh-empty)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l1)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l2)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l3)" }} /><div className="gh-legend-cell" style={{ background: "var(--gh-l4)" }} />More</div>
       </div>
     </div>
   );
@@ -136,48 +134,11 @@ const marqueeItems = ["React 19", "Next.js 14", "FastAPI", "TypeScript", "Python
 
 /* ══════════════════════ PAGE ══════════════════════ */
 export default function Home() {
-  const [dark, setDark] = useState(true);
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  }, [dark]);
 
   // Mouse glow follower
-  useEffect(() => {
-    const glow = document.getElementById("mouse-glow");
-    if (!glow) return;
-    const onMove = (e: MouseEvent) => {
-      glow.style.left = e.clientX - 150 + "px";
-      glow.style.top = e.clientY - 150 + "px";
-      glow.style.opacity = "1";
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  // Mouse glow removed (no cursor-following highlight)
 
-  // Project card 3D tilt
-  useEffect(() => {
-    const cards = document.querySelectorAll<HTMLElement>(".proj-card");
-    const handlers: Array<{ el: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }> = [];
-    cards.forEach((card) => {
-      const move = (e: MouseEvent) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const cx = rect.width / 2, cy = rect.height / 2;
-        const rx = (y - cy) / 10;
-        const ry = (cx - x) / 10;
-        card.style.setProperty("--mx", (x / rect.width) * 100 + "%");
-        card.style.setProperty("--my", (y / rect.height) * 100 + "%");
-        card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-8px) scale(1.02)`;
-      };
-      const leave = () => { card.style.transform = ""; };
-      card.addEventListener("mousemove", move);
-      card.addEventListener("mouseleave", leave);
-      handlers.push({ el: card, move, leave });
-    });
-    return () => handlers.forEach(({ el, move, leave }) => { el.removeEventListener("mousemove", move); el.removeEventListener("mouseleave", leave); });
-  }, []);
+  // Project cards are static now (no 3D tilt)
 
   // Stat card 3D tilt
   useEffect(() => {
@@ -204,7 +165,7 @@ export default function Home() {
   return (
     <main>
       <AnimatedShaderBackground />
-      <div id="mouse-glow" />
+      {/* mouse glow element removed */}
 
       {/* NAV */}
       <nav>
@@ -216,21 +177,23 @@ export default function Home() {
           <li><a href="#github">GitHub</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
-        <button className="theme-toggle" onClick={() => setDark(!dark)} aria-label="Toggle theme">{dark ? "🌙" : "☀️"}</button>
+        <a className="btn-secondary" href="/Resume_internship.pdf" download>Download CV</a>
       </nav>
 
       {/* HERO */}
       <div className="hero">
         <motion.p className="hero-tag" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>Full-Stack Developer &amp; Hackathon Builder</motion.p>
         <motion.h1 className="hero-name" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>Satyansh<br /><em>Dubey</em></motion.h1>
-        <motion.p className="hero-desc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }}>Building AI-powered web applications, privacy-preserving systems, and scalable REST APIs. Kolkata, India.</motion.p>
+        <motion.p className="hero-desc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }}>Building AI-powered web applications, privacy-preserving systems, and scalable REST APIs.</motion.p>
         <motion.div className="hero-ctas" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.6 }}>
-          <a className="btn-primary" href="mailto:dubeysatyansh4@gmail.com">Hire me →</a>
+          <a className="btn-primary" href="mailto:dubeysatyansh4@gmail.com" aria-label="Let's connect">Let's connect
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </a>
           <a className="btn-secondary" href="#projects">View Projects</a>
         </motion.div>
         <motion.div className="socials-row" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.8 }}>
           <a className="soc-btn" href="https://github.com/Satyansh-edith" target="_blank" rel="noopener"><GithubIcon /> GitHub</a>
-          <a className="soc-btn" href="https://linkedin.com/in/satyansh-dubey" target="_blank" rel="noopener"><LinkedinIcon /> LinkedIn</a>
+          <a className="soc-btn" href="https://www.linkedin.com/in/satyansh-dubey-351714333" target="_blank" rel="noopener"><LinkedinIcon /> LinkedIn</a>
           <a className="soc-btn" href="mailto:dubeysatyansh4@gmail.com"><EmailIcon /> Gmail</a>
           <a className="soc-btn" href="tel:+917890719366"><PhoneIcon /> +91-7890719366</a>
         </motion.div>
@@ -253,18 +216,18 @@ export default function Home() {
             <h2 className="section-title">Who I Am</h2>
             <p>I&apos;m a <strong>full-stack developer</strong> with strong expertise in React and Next.js, focused on building AI-powered web applications, privacy-preserving systems, and scalable REST APIs.</p>
             <p>Currently pursuing my <strong>B.Tech in Information Technology</strong> at Heritage Institute of Technology, Kolkata (2024–2028). Passionate about seamless user experiences and robust backend architectures.</p>
-            <p>Proven in national-level hackathons — including a <strong>Top 5 finish at ISRO for SIH 2025</strong> out of 500+ teams. Seeking a summer 2026 internship to deliver impactful, production-grade solutions.</p>
+            <p>Proven in national-level hackathons — including a <strong>Top 5 finish at ISRO for SIH 2025</strong> out of 500+ teams. 6× hackathon winner and 12× hackathon finalist.</p>
             <div className="socials-row" style={{ marginTop: "1.6rem" }}>
               <a className="soc-btn" href="https://github.com/Satyansh-edith" target="_blank" rel="noopener"><GithubIcon />GitHub</a>
-              <a className="soc-btn" href="https://linkedin.com/in/satyansh-dubey" target="_blank" rel="noopener"><LinkedinIcon />LinkedIn</a>
+              <a className="soc-btn" href="https://www.linkedin.com/in/satyansh-dubey-351714333" target="_blank" rel="noopener"><LinkedinIcon />LinkedIn</a>
               <a className="soc-btn" href="mailto:dubeysatyansh4@gmail.com"><EmailIcon />Email</a>
             </div>
           </div>
-          <div className="about-stats">
+            <div className="about-stats">
             <div className="stat-card"><div className="stat-num">Top 5</div><div className="stat-desc">SIH 2025 at ISRO — 500+ teams</div></div>
-            <div className="stat-card"><div className="stat-num">4</div><div className="stat-desc">Hackathon podium finishes</div></div>
+            <div className="stat-card"><div className="stat-num">6</div><div className="stat-desc">Hackathon wins</div></div>
+            <div className="stat-card"><div className="stat-num">12</div><div className="stat-desc">Hackathon finalists</div></div>
             <div className="stat-card"><div className="stat-num">4</div><div className="stat-desc">Full-stack projects shipped</div></div>
-            <div className="stat-card"><div className="stat-num">2026</div><div className="stat-desc">Seeking summer internship</div></div>
           </div>
         </FadeIn>
       </section>
@@ -275,9 +238,9 @@ export default function Home() {
           <div className="section-header"><span className="section-label">02 — Projects</span><div className="section-line" /></div>
           <h2 className="section-title">Things I&apos;ve Built</h2>
           <FadeIn className="projects-grid">
-            {projects.map((p) => (
+            {projects.map((p, i) => (
               <div className="proj-card" key={p.name}>
-                <div className="proj-preview" style={{ background: p.bg }}>{p.name}</div>
+                <div className={`proj-preview shape-${i % 6}`} style={{ background: p.bg }}>{p.name}</div>
                 <div className="proj-body">
                   <div className="proj-title">{p.title}</div>
                   <div className="proj-desc">{p.desc}</div>
@@ -333,9 +296,9 @@ export default function Home() {
               <div className="contact-icon"><PhoneIcon className="icon-accent2" /></div>
               <div><div className="contact-label">Phone</div><div className="contact-val">+91-7890719366</div></div>
             </a>
-            <a className="contact-item" href="https://linkedin.com/in/satyansh-dubey" target="_blank" rel="noopener">
+            <a className="contact-item" href="https://www.linkedin.com/in/satyansh-dubey-351714333" target="_blank" rel="noopener">
               <div className="contact-icon"><LinkedinIcon className="icon-linkedin" /></div>
-              <div><div className="contact-label">LinkedIn</div><div className="contact-val">linkedin.com/in/satyansh-dubey</div></div>
+              <div><div className="contact-label">LinkedIn</div><div className="contact-val">www.linkedin.com/in/satyansh-dubey-351714333</div></div>
             </a>
             <a className="contact-item" href="https://github.com/Satyansh-edith" target="_blank" rel="noopener">
               <div className="contact-icon"><GithubIcon className="icon-fg" /></div>

@@ -67,21 +67,7 @@ body {
   transition: background 0.35s, color 0.35s;
 }
 
-/* ───── MOUSE GLOW ───── */
-#mouse-glow {
-  position: fixed;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(200, 240, 96, 0.12) 0%, transparent 70%);
-  pointer-events: none;
-  border-radius: 50%;
-  z-index: 1;
-  filter: blur(40px);
-  opacity: 0;
-  transition: opacity 0.3s;
-  transform: translate3d(0, 0, 0);
-  will-change: left, top;
-}
+/* mouse glow removed */
 
 /* ───── NAV ───── */
 nav {
@@ -127,24 +113,7 @@ nav {
 .nav-links a:hover {
   color: var(--accent);
 }
-.theme-toggle {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--fg);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-.theme-toggle:hover {
-  transform: rotate(20deg) scale(1.1);
-}
+/* theme toggle removed */
 
 /* ───── HERO ───── */
 .hero {
@@ -205,20 +174,25 @@ nav {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--accent);
-  color: #0a0a0a;
-  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, var(--accent), var(--custom-accent2));
+  color: #07100a;
+  padding: 0.9rem 2.1rem;
   border-radius: 999px;
   font-family: "Syne", sans-serif;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.12s ease;
   letter-spacing: 0.02em;
+  box-shadow: 0 6px 18px rgba(10, 100, 40, 0.12);
 }
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(200, 240, 96, 0.25);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 40px rgba(10, 100, 40, 0.18);
+}
+.btn-primary:focus {
+  outline: 3px solid rgba(40,135,74,0.15);
+  outline-offset: 4px;
 }
 .btn-secondary {
   display: inline-flex;
@@ -422,28 +396,14 @@ section {
 .proj-card {
   background: var(--card-bg);
   border: 1px solid var(--custom-border);
-  border-radius: 14px;
+  border-radius: 6px;
   overflow: hidden;
-  transition: border-color 0.25s, box-shadow 0.4s;
-  transform-style: preserve-3d;
+  transition: border-color 0.2s, box-shadow 0.18s;
   position: relative;
-  will-change: transform;
-}
-.proj-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(200, 240, 96, 0.15), transparent 50%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
 }
 .proj-card:hover {
   border-color: var(--custom-border2);
-  box-shadow: 0 30px 60px var(--custom-shadow), 0 0 60px rgba(200, 240, 96, 0.08);
-}
-.proj-card:hover::after {
-  opacity: 1;
+  box-shadow: 0 12px 24px var(--custom-shadow);
 }
 .proj-preview {
   width: 100%;
@@ -466,6 +426,14 @@ section {
   inset: 0;
   background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.55));
 }
+
+/* Six static clip-path shapes for visual variety (sharp edges) */
+.proj-preview.shape-0 { clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
+.proj-preview.shape-1 { clip-path: polygon(0 0, 100% 0, 85% 100%, 0 85%); }
+.proj-preview.shape-2 { clip-path: polygon(0 0, 100% 15%, 100% 100%, 0 85%); }
+.proj-preview.shape-3 { clip-path: polygon(0 5%, 95% 0, 100% 100%, 0 100%); }
+.proj-preview.shape-4 { clip-path: polygon(0 0, 100% 0, 100% 70%, 75% 100%, 0 85%); }
+.proj-preview.shape-5 { clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 90%); }
 .proj-body {
   padding: 1.15rem 1.25rem 1.3rem;
 }
@@ -627,6 +595,16 @@ section {
   background: var(--gh-empty);
   cursor: default;
   position: relative;
+}
+.gh-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.gh-contrib-label {
+  font-size: 13px;
+  color: var(--fg2);
 }
 .gh-cell[data-level="1"] {
   background: var(--gh-l1);
