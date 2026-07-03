@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import AnimatedShaderBackground from "@/components/ui/animated-shader-background";
+import WarpDriveShader from "@/components/ui/warp-drive-shader";
+import { TextTransitionEffect } from "@/components/ui/text-transition-effect";
+import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 
 /* ── SVG Icon Components ── */
 interface IconProps {
@@ -31,6 +34,60 @@ const FadeIn = ({ children, className = "" }: { children: React.ReactNode; class
     {children}
   </motion.div>
 );
+
+/* ── Project Card with Eye Cursor ── */
+interface Project {
+  name: string;
+  title: string;
+  desc: string;
+  tags: string[];
+  bg: string;
+  primaryTag: string;
+  previewLetter: string;
+  github?: string;
+  live?: string;
+  image?: string;
+}
+function ProjectCard({ p }: { p: Project }) {
+  return (
+    <div className="proj-card">
+      <div className="proj-banner" style={{ background: p.bg }}>
+        <div
+          className="proj-banner-bg"
+          style={p.image ? { backgroundImage: `url(${p.image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+        />
+        <span className="proj-banner-badge">{p.primaryTag}</span>
+        <span className="proj-banner-letter">{p.previewLetter}</span>
+      </div>
+      <div className="proj-body">
+        <div className="proj-title">{p.title}</div>
+        <div className="proj-desc">{p.desc}</div>
+        <div className="proj-tags-row">
+          {p.tags.map((t) => (
+            <span className="proj-tag" key={t}>{t}</span>
+          ))}
+        </div>
+        <div className="proj-footer">
+          <div className="proj-links-left">
+            {p.github && (
+              <a className="proj-btn" href={p.github} target="_blank" rel="noopener">
+                <span className="proj-btn-icon">⤹</span> GitHub
+              </a>
+            )}
+            {p.live && (
+              <a className="proj-btn" href={p.live} target="_blank" rel="noopener">
+                <span className="proj-btn-icon">⬀</span> Live
+              </a>
+            )}
+          </div>
+          <a className="proj-square-btn" href={p.live || p.github} target="_blank" rel="noopener">
+            <span className="proj-square-icon">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ── GitHub Graph ── */
 function GithubGraph() {
@@ -115,22 +172,98 @@ function GithubGraph() {
 
 /* ── PROJECTS DATA ── */
 const projects = [
-  { name: "MAITRI", title: "MAITRI — AI Mental Health Companion", desc: "Fully offline AI mental health companion for astronauts & high-stress professionals. Voice input + real-time facial emotion recognition with personalised interventions.", tags: ["React", "Python", "Voice AI", "Facial Recognition"], bg: "linear-gradient(135deg,#1a0a2e,#3d1a5c,#1a1a3d)", github: "https://github.com/Satyansh-edith" },
-  { name: "MedEzee", title: "MedEzee — AI Health Companion", desc: "Full-stack healthcare app with Apple Health-inspired dark UI. FastAPI backend with JWT auth, AI symptom analyzer, health chatbot, and RxNorm medicine conversion.", tags: ["React 19", "Vite", "FastAPI", "SQLite"], bg: "linear-gradient(135deg,#0a1e2e,#0d3d5c,#0a2e2e)", github: "https://github.com/Satyansh-edith" },
-  { name: "ZK-UPI", title: "ZK-UPI — Privacy-Preserving Payments", desc: "Privacy-first payment prototype in Next.js 14. SHA-256 commitment hashing for anonymous wallets, merchant QR flow, and real-time transaction explorer.", tags: ["Next.js 14", "TypeScript", "MongoDB", "SHA-256"], bg: "linear-gradient(135deg,#001a0a,#003d1a,#001a2e)", github: "https://github.com/Satyansh-edith", live: "https://github.com/Satyansh-edith" },
-  { name: "Rural Roots", title: "Rural Roots — AI Crop Disease Detection", desc: "AI-powered crop disease detection platform integrating geotagging and IoT sensor data for real-time field analysis.", tags: ["Python", "AI/ML", "FastAPI", "IoT"], bg: "linear-gradient(135deg,#0a1e0a,#1a3d1a,#2e3d0a)", live: "https://ruralroot.netlify.app" },
+  {
+    name: "Plutopuss",
+    title: "PLUTO — Autonomous Cyber Defense Agent",
+    desc: "Architected an autonomous threat detection platform combining agent-based reasoning loops, Playwright-based sandbox isolation, and Chrome MV3 extension interception to classify and respond to 100+ attack vectors in real time. Built with Next.js 16, React 19, TypeScript 5, and Server-Sent Events for sub-second threat scoring and response automation with complete audit trails.",
+    tags: ["NEXT.JS 16", "PLAYWRIGHT", "CHROME MV3", "TYPESCRIPT", "SSE"],
+    bg: "linear-gradient(135deg, #0f172a 0%, #020617 100%)",
+    primaryTag: "NEXT.JS 16",
+    previewLetter: "P",
+    github: "https://github.com/Satyansh-edith/plutopuss",
+    live: "https://plutopuss.vercel.app/",
+    image: "/plutopuss.png"
+  },
+  {
+    name: "Rural Roots",
+    title: "Rural Roots — AI Crop Disease Detection",
+    desc: "AI-powered crop disease detection platform integrating geotagging and IoT sensor data for real-time field analysis.",
+    tags: ["PYTHON", "AI/ML", "FASTAPI", "IOT"],
+    bg: "linear-gradient(135deg, #0a1e0a 0%, #15250a 100%)",
+    primaryTag: "PYTHON",
+    previewLetter: "R",
+    live: "https://ruralroot.netlify.app",
+    image: "/rural_roots.png"
+  },
+  {
+    name: "MAITRI",
+    title: "MAITRI — AI Mental Health Companion",
+    desc: "Fully offline AI mental health companion for astronauts & high-stress professionals. Voice input + real-time facial emotion recognition with personalised interventions.",
+    tags: ["REACT", "PYTHON", "VOICE AI", "FACIAL RECOGNITION"],
+    bg: "linear-gradient(135deg, #1b0a2e 0%, #0c051a 100%)",
+    primaryTag: "REACT",
+    previewLetter: "M",
+    github: "https://github.com/Satyansh-edith",
+    image: "/maitri.jpg"
+  },
+  {
+    name: "Logistics",
+    title: "SmartLogistics — AI-Powered Supply Chain Operating System",
+    desc: "Architected a next-generation supply chain management platform integrating real-time tracking, weather-aware AI route recommendations, risk analysis, and dynamic role-based dashboards. Built with Next.js 14, TypeScript, Express, and Supabase, featuring an intelligent API key rotation system and Framer Motion animation.",
+    tags: ["NEXT.JS 14", "TYPESCRIPT", "SUPABASE", "EXPRESS.JS", "AI ROUTING"],
+    bg: "linear-gradient(135deg, #2e1a0a 0%, #0f0b07 100%)",
+    primaryTag: "NEXT.JS 14",
+    previewLetter: "L",
+    github: "https://github.com/Satyansh-edith/Logisticss",
+    live: "https://logistics-1-mypj.onrender.com",
+    image: "/logistics.png"
+  }
 ];
 
 const skills = [
-  { group: "Languages", tags: ["C", "C++", "Python", "JavaScript", "TypeScript"] },
-  { group: "Frontend", tags: ["React 19", "Next.js 14", "HTML", "CSS", "Tailwind CSS", "React Router DOM"] },
-  { group: "Backend", tags: ["FastAPI", "REST APIs", "Next.js API Routes", "JWT Auth", "SQLAlchemy ORM"] },
-  { group: "Databases", tags: ["SQLite", "MongoDB", "Firebase"] },
-  { group: "Tools & Infra", tags: ["Git", "GitHub", "Docker", "AWS", "Linux", "Vite"] },
-  { group: "Core CS", tags: ["DSA", "OOP", "System Design", "Competitive Programming"] },
+  {
+    category: "Languages & Core",
+    items: ["JavaScript", "Python", "Go", "SQL", "AI/ML Models"]
+  },
+  {
+    category: "Frontend & Architecture",
+    items: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion"]
+  },
+  {
+    category: "Backend & Data",
+    items: ["FastAPI", "SQLAlchemy", "MongoDB", "PostgreSQL", "AI Routing", "SSE Streaming"]
+  },
+  {
+    category: "Systems & Security",
+    items: ["Docker", "AWS", "Playwright", "Autonomous Agents", "Speech & Vision AI"]
+  }
 ];
 
-const marqueeItems = ["React 19", "Next.js 14", "FastAPI", "TypeScript", "Python", "MongoDB", "Docker", "AWS", "Tailwind CSS", "JWT Auth", "SQLAlchemy ORM", "AI / ML", "REST APIs", "System Design"];
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.05
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 25 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 80,
+      damping: 15
+    }
+  }
+};
+
+const marqueeItems = ["React 19", "Next.js 16", "FastAPI", "TypeScript", "Python", "MongoDB", "Docker", "AWS", "Tailwind CSS v4", "JWT Auth", "SQLAlchemy ORM", "AI / ML", "REST APIs", "System Design"];
 
 /* ══════════════════════ PAGE ══════════════════════ */
 export default function Home() {
@@ -177,25 +310,45 @@ export default function Home() {
           <li><a href="#github">GitHub</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
-        <a className="btn-secondary" href="/Resume_internship.pdf" download>Download CV</a>
+        <LiquidMetalButton href="/Resume_internship.pdf" download label="Download CV" />
       </nav>
 
       {/* HERO */}
       <div className="hero">
         <motion.p className="hero-tag" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>Full-Stack Developer &amp; Hackathon Builder</motion.p>
         <motion.h1 className="hero-name" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>Satyansh<br /><em>Dubey</em></motion.h1>
-        <motion.p className="hero-desc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }}>Building AI-powered web applications, privacy-preserving systems, and scalable REST APIs.</motion.p>
+        <motion.p className="hero-desc" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }}>Architecting AI-integrated systems, secure authentication flows, and scalable backend infrastructure — from prototype to production.</motion.p>
         <motion.div className="hero-ctas" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.6 }}>
           <a className="btn-primary" href="mailto:dubeysatyansh4@gmail.com" aria-label="Let's connect">Let's connect
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </a>
           <a className="btn-secondary" href="#projects">View Projects</a>
         </motion.div>
-        <motion.div className="socials-row" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.8 }}>
-          <a className="soc-btn" href="https://github.com/Satyansh-edith" target="_blank" rel="noopener"><GithubIcon /> GitHub</a>
-          <a className="soc-btn" href="https://www.linkedin.com/in/satyansh-dubey-351714333" target="_blank" rel="noopener"><LinkedinIcon /> LinkedIn</a>
-          <a className="soc-btn" href="mailto:dubeysatyansh4@gmail.com"><EmailIcon /> Gmail</a>
-          <a className="soc-btn" href="tel:+917890719366"><PhoneIcon /> +91-7890719366</a>
+        <motion.div className="socials-row" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.8 }} style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap", alignItems: "center" }}>
+          <LiquidMetalButton
+            href="https://github.com/Satyansh-edith"
+            target="_blank"
+            rel="noopener"
+            label="GitHub"
+            icon={<GithubIcon style={{ width: "13px", height: "13px", color: "var(--fg)" }} />}
+          />
+          <LiquidMetalButton
+            href="https://www.linkedin.com/in/satyansh-dubey-351714333"
+            target="_blank"
+            rel="noopener"
+            label="LinkedIn"
+            icon={<LinkedinIcon style={{ width: "13px", height: "13px", color: "#0077b5" }} />}
+          />
+          <LiquidMetalButton
+            href="mailto:dubeysatyansh4@gmail.com"
+            label="Gmail"
+            icon={<EmailIcon style={{ width: "13px", height: "13px", color: "var(--accent)" }} />}
+          />
+          <LiquidMetalButton
+            href="tel:+917890719366"
+            label="Book a call"
+            icon={<PhoneIcon style={{ width: "13px", height: "13px", color: "var(--fg)" }} />}
+          />
         </motion.div>
       </div>
 
@@ -214,20 +367,13 @@ export default function Home() {
         <FadeIn className="about-grid">
           <div className="about-text">
             <h2 className="section-title">Who I Am</h2>
-            <p>I&apos;m a <strong>full-stack developer</strong> with strong expertise in React and Next.js, focused on building AI-powered web applications, privacy-preserving systems, and scalable REST APIs.</p>
-            <p>Currently pursuing my <strong>B.Tech in Information Technology</strong> at Heritage Institute of Technology, Kolkata (2024–2028). Passionate about seamless user experiences and robust backend architectures.</p>
-            <p>Proven in national-level hackathons — including a <strong>Top 5 finish at ISRO for SIH 2025</strong> out of 500+ teams. 6× hackathon winner and 12× hackathon finalist.</p>
-            <div className="socials-row" style={{ marginTop: "1.6rem" }}>
-              <a className="soc-btn" href="https://github.com/Satyansh-edith" target="_blank" rel="noopener"><GithubIcon />GitHub</a>
-              <a className="soc-btn" href="https://www.linkedin.com/in/satyansh-dubey-351714333" target="_blank" rel="noopener"><LinkedinIcon />LinkedIn</a>
-              <a className="soc-btn" href="mailto:dubeysatyansh4@gmail.com"><EmailIcon />Email</a>
-            </div>
+            <p>I&apos;m a <strong>Full-Stack Software Engineer</strong> who thinks in systems, not just screens &mdash; building with <strong>Next.js</strong>, <strong>React</strong>, and <strong>TypeScript</strong> on the frontend, and <strong>FastAPI</strong>, <strong>SQLAlchemy</strong>, and <strong>MongoDB</strong> on the backend. I design REST APIs, JWT authentication, and scalable data architectures, and specialize in the hard problems that separate demos from production: <strong>autonomous reasoning loops</strong>, <strong>sandboxed execution environments</strong>, real-time streaming (<strong>SSE</strong>), and <strong>cryptographic privacy protocols</strong>.</p>
+            <p>My focus is <strong>architecture-first engineering</strong> &mdash; building systems that are secure, scalable, and production-ready from day one.</p>
           </div>
             <div className="about-stats">
             <div className="stat-card"><div className="stat-num">Top 5</div><div className="stat-desc">SIH 2025 at ISRO — 500+ teams</div></div>
             <div className="stat-card"><div className="stat-num">6</div><div className="stat-desc">Hackathon wins</div></div>
             <div className="stat-card"><div className="stat-num">12</div><div className="stat-desc">Hackathon finalists</div></div>
-            <div className="stat-card"><div className="stat-num">4</div><div className="stat-desc">Full-stack projects shipped</div></div>
           </div>
         </FadeIn>
       </section>
@@ -235,22 +381,14 @@ export default function Home() {
       {/* PROJECTS */}
       <div className="full-bleed" id="projects">
         <div className="inner">
-          <div className="section-header"><span className="section-label">02 — Projects</span><div className="section-line" /></div>
+          <div className="section-header">
+            <span className="section-label">02 — Projects</span>
+            <div className="section-line" />
+          </div>
           <h2 className="section-title">Things I&apos;ve Built</h2>
           <FadeIn className="projects-grid">
-            {projects.map((p, i) => (
-              <div className="proj-card" key={p.name}>
-                <div className={`proj-preview shape-${i % 6}`} style={{ background: p.bg }}>{p.name}</div>
-                <div className="proj-body">
-                  <div className="proj-title">{p.title}</div>
-                  <div className="proj-desc">{p.desc}</div>
-                  <div className="proj-tags-row">{p.tags.map((t) => <span className="proj-tag" key={t}>{t}</span>)}</div>
-                  <div className="proj-links">
-                    {p.github && <a className="proj-link-btn" href={p.github} target="_blank" rel="noopener"><GithubIcon />GitHub</a>}
-                    {p.live && <a className="proj-link-btn" href={p.live} target="_blank" rel="noopener"><ExternalIcon />{p.live.replace(/https?:\/\//, "")}</a>}
-                  </div>
-                </div>
-              </div>
+            {projects.map((p) => (
+              <ProjectCard key={p.name} p={p} />
             ))}
           </FadeIn>
         </div>
@@ -258,16 +396,30 @@ export default function Home() {
 
       {/* SKILLS */}
       <section id="skills">
-        <div className="section-header"><span className="section-label">03 — Skills</span><div className="section-line" /></div>
+        <div className="section-header"><span className="section-label">03 — SKILLS</span><div className="section-line" /></div>
         <h2 className="section-title">Technical Stack</h2>
-        <FadeIn className="skills-grid">
+        <motion.div 
+          className="skills-grid"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.08 }}
+        >
           {skills.map((s) => (
-            <div className="skill-group" key={s.group}>
-              <div className="skill-group-title">{s.group}</div>
-              <div className="skill-tags">{s.tags.map((t) => <span className="skill-tag" key={t}>{t}</span>)}</div>
-            </div>
+            <motion.div 
+              className="skill-group" 
+              key={s.category}
+              variants={itemVariants}
+            >
+              <h3 className="skill-group-title">{s.category}</h3>
+              <div className="skill-tags">
+                {s.items.map((t) => (
+                  <span className="skill-tag" key={t}>{t}</span>
+                ))}
+              </div>
+            </motion.div>
           ))}
-        </FadeIn>
+        </motion.div>
       </section>
 
       {/* GITHUB */}
@@ -285,7 +437,40 @@ export default function Home() {
         <FadeIn className="contact-wrap">
           <div className="contact-left">
             <p className="big-text">Let&apos;s build something <em>remarkable</em> together.</p>
-            <p style={{ color: "var(--fg2)", fontSize: "13px", lineHeight: "1.8" }}>Open to summer 2026 internships, collaborations, and freelance projects.</p>
+            <p style={{ color: "var(--fg2)", fontSize: "14px", lineHeight: "1.8", marginBottom: "2rem" }}>Open to summer 2026 internships, collaborations, and freelance projects.</p>
+            
+            {/* Quote Card */}
+            <div className="quote-card" style={{
+              background: "rgba(255, 255, 255, 0.03)",
+              border: "1px solid rgba(255, 255, 255, 0.06)",
+              padding: "1.5rem",
+              borderRadius: "0px",
+              backdropFilter: "blur(12px)",
+              maxWidth: "420px",
+              textAlign: "left"
+            }}>
+              <p style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: "13.5px",
+                lineHeight: "1.6",
+                color: "var(--fg)",
+                margin: 0,
+                fontStyle: "italic"
+              }}>
+                &ldquo;First, solve the problem. Then, write the code.&rdquo;
+              </p>
+              <p style={{
+                fontFamily: "'Syne', sans-serif",
+                fontSize: "11px",
+                color: "var(--fg2)",
+                marginTop: "0.75rem",
+                marginBottom: 0,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em"
+              }}>
+                — John Johnson
+              </p>
+            </div>
           </div>
           <div className="contact-right">
             <a className="contact-item" href="mailto:dubeysatyansh4@gmail.com">
@@ -307,6 +492,36 @@ export default function Home() {
           </div>
         </FadeIn>
       </section>
+
+      {/* CREATION (WARP DRIVE) */}
+      <div className="full-bleed" id="creation" style={{ 
+        position: "relative", 
+        overflow: "hidden", 
+        height: "100vh", 
+        minHeight: "100vh", 
+        display: "flex", 
+        flexDirection: "column", 
+        alignItems: "center", 
+        justifyContent: "center",
+        borderTop: "1px solid var(--border)",
+        borderBottom: "1px solid var(--border)",
+        background: "transparent"
+      }}>
+        <WarpDriveShader />
+        <div className="inner" style={{ position: "relative", zIndex: 10, width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
+          <div className="section-header">
+            <span className="section-label">06 — Creation</span>
+            <div className="section-line" />
+          </div>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
+            <FadeIn>
+              <TextTransitionEffect 
+                words={["SATYANSH DUBEY", "SOFTWARE ENGINEER", "FULL-STACK ENGINEER", "HACKATHON WINNER", "PROBLEM SOLVER"]} 
+              />
+            </FadeIn>
+          </div>
+        </div>
+      </div>
 
       <footer>
         <span>© 2025 Satyansh Dubey. Built with intent.</span>
