@@ -310,7 +310,7 @@ export default function Home() {
           <li><a href="#github">GitHub</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
-        <LiquidMetalButton href="/Resume_internship.pdf" download label="Download CV" />
+        <LiquidMetalButton href="/Satyansh_Dubey_Resume_ATS_Charter.pdf" download label="Download CV" />
       </nav>
 
       {/* HERO */}
