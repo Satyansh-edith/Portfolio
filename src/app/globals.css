@@ -663,7 +663,7 @@ section {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg3);
-  margin-bottom: 1.1rem;
+  margin-bottom: 0.4rem;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -674,9 +674,63 @@ section {
   height: 1px;
   background: var(--border);
 }
+.gh-container {
+  max-width: max-content;
+  margin: 0 auto;
+  width: 100%;
+}
 .gh-grid-wrap {
   overflow-x: auto;
+  padding-top: 1.8rem;
   padding-bottom: 0.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+.gh-grid-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: max-content;
+}
+.gh-months-row {
+  display: flex;
+  align-items: center;
+}
+.gh-month-spacer {
+  width: 32px;
+  min-width: 32px;
+}
+.gh-months-list {
+  display: flex;
+  gap: 3px;
+}
+.gh-month-label {
+  font-size: 9px;
+  color: var(--fg3);
+  font-family: sans-serif;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.gh-grid-layout {
+  display: flex;
+  align-items: flex-end;
+}
+.gh-days-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-right: 8px;
+}
+.gh-day-label {
+  font-size: 9px;
+  height: 11px;
+  line-height: 11px;
+  color: var(--fg3);
+  font-family: sans-serif;
+  text-align: right;
+  width: 24px;
 }
 .gh-grid {
   display: flex;
@@ -701,6 +755,8 @@ section {
   justify-content: space-between;
   align-items: center;
   margin-top: 0.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 .gh-contrib-label {
   font-size: 13px;
@@ -733,6 +789,15 @@ section {
   pointer-events: none;
   z-index: 10;
   font-family: "DM Mono", monospace;
+}
+.gh-cell.tooltip-left:hover::after {
+  left: 0;
+  transform: none;
+}
+.gh-cell.tooltip-right:hover::after {
+  left: auto;
+  right: 0;
+  transform: none;
 }
 .gh-legend {
   display: flex;
@@ -775,6 +840,10 @@ section {
 .gh-msg {
   color: var(--fg3);
   font-size: 12px;
+  text-align: center;
+  width: 100%;
+  display: block;
+  padding: 1.5rem 0;
 }
 .gh-loading {
   animation: pulse 1.5s ease-in-out infinite;
