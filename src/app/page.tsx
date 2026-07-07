@@ -96,9 +96,9 @@ function GithubGraph() {
   useEffect(() => {
     (async () => {
       const username = "Satyansh-edith";
-      const CACHE_KEY_STATS = `gh_stats_v5_${username}`;
-      const CACHE_KEY_WEEKS = `gh_weeks_v5_${username}`;
-      const CACHE_KEY_TIME = `gh_time_v5_${username}`;
+      const CACHE_KEY_STATS = `gh_stats_v6_${username}`;
+      const CACHE_KEY_WEEKS = `gh_weeks_v6_${username}`;
+      const CACHE_KEY_TIME = `gh_time_v6_${username}`;
       const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
       // Helper to generate mock data if API fails and no cache exists
@@ -216,7 +216,22 @@ function GithubGraph() {
 
         const contributions: { date: string; count: number }[] = contribData.contributions || [];
 
-        const totalContributions = contribData.total?.lastYear ?? contributions.reduce((a: number, c: { count: number }) => a + c.count, 0);
+        // Calculate total contributions from all years, fallback to lastYear if not available
+        let totalContributions = 0;
+        if (contribData.total) {
+          if (typeof contribData.total === 'object' && !Array.isArray(contribData.total)) {
+            // If total is an object with year keys, sum all years
+            totalContributions = Object.values(contribData.total).reduce((a: any, b: any) => a + b, 0);
+          } else if (contribData.total.allTime) {
+            totalContributions = contribData.total.allTime;
+          } else if (contribData.total.lastYear) {
+            totalContributions = contribData.total.lastYear;
+          }
+        }
+        // Fallback to summing contributions if total not available
+        if (totalContributions === 0) {
+          totalContributions = contributions.reduce((a: number, c: { count: number }) => a + c.count, 0);
+        }
 
         const maxCount = Math.max(...contributions.map((d: { count: number }) => d.count), 1);
         const fullYearContributions = contributions.slice(-371);
