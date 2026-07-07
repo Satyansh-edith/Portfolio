@@ -3,8 +3,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import AnimatedShaderBackground from "@/components/ui/animated-shader-background";
-import WarpDriveShader from "@/components/ui/warp-drive-shader";
-import { TextTransitionEffect } from "@/components/ui/text-transition-effect";
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button";
 
 /* ── SVG Icon Components ── */
@@ -464,6 +462,21 @@ const marqueeItems = ["React 19", "Next.js 16", "FastAPI", "TypeScript", "Python
 
 /* ══════════════════════ PAGE ══════════════════════ */
 export default function Home() {
+  const [isMuted, setIsMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = 0.65;
+    audio.muted = isMuted;
+    if (!isMuted) {
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {});
+      }
+    }
+  }, [isMuted]);
 
   // Mouse glow follower
   // Mouse glow removed (no cursor-following highlight)
@@ -495,6 +508,14 @@ export default function Home() {
   return (
     <main>
       <AnimatedShaderBackground />
+      <audio
+        ref={audioRef}
+        src="/pubg_ringtone.mp3"
+        loop
+        autoPlay
+        muted={isMuted}
+        aria-hidden="true"
+      />
       {/* mouse glow element removed */}
 
       {/* NAV */}
@@ -509,6 +530,7 @@ export default function Home() {
         </ul>
         <LiquidMetalButton href="/Satyansh_Dubey_Resume_ATS_Charter.pdf" download label="Download CV" />
       </nav>
+      
 
       {/* HERO */}
       <div className="hero">
@@ -690,37 +712,18 @@ export default function Home() {
         </FadeIn>
       </section>
 
-      {/* CREATION (WARP DRIVE) */}
-      <div className="full-bleed" id="creation" style={{ 
-        position: "relative", 
-        overflow: "hidden", 
-        height: "100vh", 
-        minHeight: "100vh", 
-        display: "flex", 
-        flexDirection: "column", 
-        alignItems: "center", 
-        justifyContent: "center",
-        borderTop: "1px solid var(--border)",
-        borderBottom: "1px solid var(--border)",
-        background: "transparent"
-      }}>
-        <WarpDriveShader />
-        <div className="inner" style={{ position: "relative", zIndex: 10, width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
-          <div className="section-header">
-            <span className="section-label">06 — Creation</span>
-            <div className="section-line" />
-          </div>
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", width: "100%" }}>
-            <FadeIn>
-              <TextTransitionEffect 
-                words={["SATYANSH DUBEY", "SOFTWARE ENGINEER", "FULL-STACK ENGINEER", "HACKATHON WINNER", "PROBLEM SOLVER"]} 
-              />
-            </FadeIn>
-          </div>
-        </div>
-      </div>
-
       <footer>
+        <motion.button
+          type="button"
+          className={`mute-button ${isMuted ? "muted" : "unmuted"}`}
+          onClick={() => setIsMuted((prev) => !prev)}
+          aria-label={isMuted ? "Unmute background music" : "Mute background music"}
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.9 }}
+          style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '44px', height: '44px', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {isMuted ? "🔇" : "🔊"}
+        </motion.button>
         <span>© 2025 Satyansh Dubey. Built with intent.</span>
         <span>Kolkata, India · <a href="mailto:dubeysatyansh4@gmail.com">dubeysatyansh4@gmail.com</a></span>
       </footer>
