@@ -221,7 +221,7 @@ function GithubGraph() {
         if (contribData.total) {
           if (typeof contribData.total === 'object' && !Array.isArray(contribData.total)) {
             // If total is an object with year keys, sum all years
-            totalContributions = Object.values(contribData.total).reduce((a: any, b: any) => a + b, 0);
+            totalContributions = Object.values(contribData.total).reduce((a: number, b: any) => a + Number(b), 0);
           } else if (contribData.total.allTime) {
             totalContributions = contribData.total.allTime;
           } else if (contribData.total.lastYear) {
